@@ -1,0 +1,7 @@
+name: coot_plumage
+channels:
+  - defaults
+dependencies:
+  - python
+  - pandas=1.5.3
+  - bs4=4.11.1
