@@ -44,8 +44,8 @@ The easiest way to have access to these is with an [Anaconda](https://www.anacon
 conda env create -f coot_plumage.yml  
 conda activate coot_plumage  
 Then add the following to your ~/.bashrc file:  
-export PATH=<full_path_to>/coot_plumage/bin:$PATH  
-Or if on windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.
+export PYTHONPATH=<full_path_to>/coot_plumage/bin:$PYTHONPATH  
+Or if on windows add <full_path_to>/coot_plumage/bin to your system PYTHONPATH environment variable.
 
 Then it can be run using:
 molprobity_to_coot.py  
