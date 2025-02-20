@@ -9,7 +9,7 @@ To start, send the model to the molprobity server at [molprobity.biochem.duke.ed
 Click through to the results section named "Multi-criterion chart". This will display a table with all the residues and any validation issues associated with each. Save this webpage as a html file (Right click or File -> Save as...).
 Then you can extract a subset of residues from this table and send them to Coot. For example, if you wanted to select all the Rotamer outliers, do:
 ```
-python molprobity_to_coot.py --column Rotamer --filter_text OUTLIER <molprobity_html_file>
+molprobity_to_coot.py --column Rotamer --filter_text OUTLIER <molprobity_html_file>
 ```
 where <molprobity_html_file> is the downloaded html file from molprobity. The script finds cells in the table that contain the value set by --filter_text so you can set this to "Allowed" or any other text that will match whatever you want.  
 Alternatively, there are some wrapper scripts that will find the most recent html file in the current directory so you can copy these to that directory and run them by double-clicking them or calling them from the command line. Hopefully these should be straightforward to edit to suit your needs. 
