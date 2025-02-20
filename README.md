@@ -43,12 +43,14 @@ This script runs on an external python installation and has the following requir
 The easiest way to have access to these is with an [Anaconda](https://www.anaconda.com/download) installation as these libraries should be installed already. If not, set up an environment with:  
 conda env create -f coot_plumage.yml  
 conda activate coot_plumage  
+On unix systems you will need to make this executable with:  
+chmod +x bin/molprobity_to_coot.py  
 Then add the following to your ~/.bashrc file:  
-export PYTHONPATH=<full_path_to>/coot_plumage/bin:$PYTHONPATH  
-Or if on windows add <full_path_to>/coot_plumage/bin to your system PYTHONPATH environment variable.
+export PATH=<full_path_to>/coot_plumage/bin:$PATH  
+Or if on windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.  
 
 Then it can be run using:
-molprobity_to_coot.py  
+molprobity_to_coot.py
 (Note you may have to do "conda activate coot_plumage" first depending on how you set it up)
 
 

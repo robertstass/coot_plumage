@@ -12,7 +12,7 @@ if not defined latest_html (
 )
 
 :: Run the Python script with the latest HTML file
-python molprobity_to_coot.py --column "Ramachandran" --filter_text "OUTLIER" "!latest_html!"
+molprobity_to_coot.py --column "Ramachandran" --filter_text "OUTLIER" "!latest_html!"
 
 :: Delay for 5 seconds before closing
 timeout /t 5
