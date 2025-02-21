@@ -24,7 +24,7 @@ This simply cycles through the rotamers similar to the "Rotamers..." button but 
 Click the buttons or use the "e" and "r" keys. 
 
 ## Real space refine zone
-A hotkey to activate the real space refine zone mode for the current residue and for n residues either side. This avoids having to click the start and end residues. 
+A hotkey to activate the real space refine zone mode for the current residue and for n residues either side. This avoids having to click the start and end residues. (Note: It is designed to stop at breaks in the chain).  
 
 By default the z and x keys activate the current residue and 2 and 3 residues either side respectively. There is also an option to press Shift + number key to run the command with n set to 0-9. Note: you may need to edit the script to match your keyboard layout. 
 
