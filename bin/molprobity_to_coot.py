@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 
 from bs4 import BeautifulSoup
 import pandas as pd

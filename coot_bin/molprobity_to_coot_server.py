@@ -1,7 +1,7 @@
 # This is not a standalone script.
 # It must be run in coot using the run_script(r"/path/to/molprobity_to_coot_server.py")
 # Then it used in conjunction with a separate molprobity_to_coot.py script.
-
+# Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 ############################################
 
 previous_key = "q"
@@ -144,8 +144,8 @@ gobject.timeout_add(10, process_queue)
 # coot.set_map_radius_em(40) # or any other coot function
 
 
-coot_toolbar_button("Previous residue", "go_to_previous_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Hotkey: %s" % (port, previous_key))
+coot_toolbar_button("Previous residue", "go_to_previous_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, previous_key))
 add_key_binding("Previous residue", previous_key, lambda: go_to_previous_residue())
 
-coot_toolbar_button("Next residue", "go_to_next_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Hotkey: %s" % (port, next_key))
+coot_toolbar_button("Next residue", "go_to_next_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, next_key))
 add_key_binding("Next residue", next_key, lambda: go_to_next_residue())

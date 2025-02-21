@@ -1,6 +1,6 @@
 # This is not a standalone script.
 # It must be run in coot using the run_script(r"/path/to/coot_rotamers.py")
-
+# Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 ############################################
 
 previous_rotamer_key = 'e'
@@ -283,10 +283,10 @@ def previous_rotamer():
 
 
 
-coot_toolbar_button("Previous rotamer", "previous_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue. Hotkey: %s" % previous_rotamer_key)
+coot_toolbar_button("Previous rotamer", "previous_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % previous_rotamer_key)
 add_key_binding("Previous rotamer",previous_rotamer_key, lambda: previous_rotamer())
 
-coot_toolbar_button("Next rotamer", "next_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue. Hotkey: %s" % next_rotamer_key)
+coot_toolbar_button("Next rotamer", "next_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % next_rotamer_key)
 add_key_binding("Next rotamer",next_rotamer_key, lambda: next_rotamer())
 
 

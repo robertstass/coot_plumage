@@ -1,9 +1,8 @@
-#Move this script to the ~/.coot-preferences directory
+# Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 
 ###### Set to the full path of the Coot plumage repository
 script_dir = r"<full_path_to>/coot_plumage"
-
-
+#Move this script to the ~/.coot-preferences directory
 
 
 ###### Additional defaults ######

@@ -1,7 +1,9 @@
 ## Coot plumage - Adding a feathery flourish to Coot.
 
-A small collection of mostly time saving add-ons for the model building software Coot.
+A small collection of mostly time saving add-ons for the model building software Coot.  
 Installation instructions can be found at the end of this file.
+
+Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 
 ## Molprobity to Coot
 Extract a list of residues from the Molprobity multi-criterion table produced by the web server and send them to coot. Buttons and hotkeys are provided to quickly cycle through residues in this list within coot to quickly fix issues without having to keep cross-referencing back to the table.  
@@ -14,7 +16,7 @@ molprobity_to_coot.py --column Rotamer --filter_text OUTLIER <molprobity_html_fi
 where <molprobity_html_file> is the downloaded html file from molprobity. The script finds cells in the table that contain the value set by --filter_text so you can set this to "Allowed" or any other text that will match whatever you want.  
 Alternatively, there are some wrapper scripts that will find the most recent html file in the current directory so you can copy these to that directory and run them by double-clicking them or calling them from the command line. Hopefully these should be straightforward to edit to suit your needs. 
 
-Finally you can cycle through the residues in this list with the toolbar buttons provided or with the "q" and "w" keys. 
+Finally you can cycle through the residues in this list with the toolbar buttons provided or with the "q" and "w" keys. (ensure the correct molecule is selected in the "Go To Atom" window.) 
 
 Note: additional installation steps are required to get this to work. See instructions below.
 ## Next rotamer
@@ -34,18 +36,26 @@ Some inspiration for these scripts were taken from Oli Clarke's excellent repo [
 
 ## Installation
 Coot:   
-Download/clone this repository and edit the plumage.py file to replace the value of script_dir with the full path to this repository directory. Then move the plumage.py file to the ~/.coot-preferences directory (C:\Users\<username>\.coot-preferences on Windows). Feel free to edit default values or remove any unwanted lines in this file. 
+Download/clone this repository:
+```commandline
+git clone https://github.com/robertstass/coot_plumage.git
+```
+Go to the coot_plumage directory and edit the plumage.py file to replace the value of script_dir with the full path to this repository directory. Then move the plumage.py file to the ~/.coot-preferences directory:
+```commandline
+mv plumage.py ~/.coot-preferences
+```
+(C:\Users\<username>\.coot-preferences on Windows).  
+Feel free to edit default values or remove any unwanted lines in this file. 
 
 Additional steps are required to use the molprobity_to_coot.py script:  
 This script runs on an external python installation and has the following requirements:  
 -pandas (tested on v1.5.3)  
 -bs4 (tested on v4.11.1)  
-The easiest way to have access to these is with an [Anaconda](https://www.anaconda.com/download) installation as these libraries should be installed already. If not, set up an environment with:  
+The easiest way to get access to these is with an [Anaconda](https://www.anaconda.com/download) installation as these libraries should be installed already. If not, set up an environment with:  
 conda env create -f coot_plumage.yml  
-conda activate coot_plumage  
-On unix systems you will need to make this executable with:  
-chmod +x bin/molprobity_to_coot.py  
-Then add the following to your ~/.bashrc file:  
+conda activate coot_plumage   
+
+Add the following to your ~/.bashrc file:  
 export PATH=<full_path_to>/coot_plumage/bin:$PATH  
 Or if on windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.  
 

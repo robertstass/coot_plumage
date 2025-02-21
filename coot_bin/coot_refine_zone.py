@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # This is not a standalone script.
 # It must be run in coot using the run_script(r"/path/to/coot_refine_zone.py")
-
+# Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 ############################################
 
 default_number_of_residues_1 = 2
@@ -68,7 +68,7 @@ def refine_default_2():
 
 
 
-coot_toolbar_button("Real space refine zone", "refine_default_1()", "refine-1.svg", tooltip="Real space refine zone for current residue and %d residues either side. Hotkeys: %s(%d either side). %s(%d either side)." % (default_number_of_residues_1, key_1, default_number_of_residues_1, key_2, default_number_of_residues_2))
+coot_toolbar_button("Real space refine zone", "refine_default_1()", "refine-1.svg", tooltip="Real space refine zone for current residue and %d residues either side. Part of the coot_plumage set of scripts. Hotkeys: %s(%d either side). %s(%d either side)." % (default_number_of_residues_1, key_1, default_number_of_residues_1, key_2, default_number_of_residues_2))
 add_key_binding("Real space refine zone default 1",key_1, lambda: refine_default_1())
 add_key_binding("Real space refine zone default 1",key_2, lambda: refine_default_2())
 
