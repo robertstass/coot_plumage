@@ -106,6 +106,7 @@ def main(html_file, column, filter_text, port):
     residue_list = [resi_string.split() for resi_string in subset_df[ResidueColumn]]
     residue_list = [(chain, int(residue)) for chain, residue in residue_list]
 
+    print("Sending residue list to coot...")
     try:
         coot = xmlrpc.client.ServerProxy("http://127.0.0.1:%d" % port)
         coot.update_residue_list(residue_list)
