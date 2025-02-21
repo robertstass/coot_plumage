@@ -55,12 +55,16 @@ The easiest way to get access to these is with an [Anaconda](https://www.anacond
 conda env create -f coot_plumage.yml  
 conda activate coot_plumage   
 
-Add the following to your ~/.bashrc file:  
+Add the following to your ~/.bashrc file: 
+```
 export PATH=<full_path_to>/coot_plumage/bin:$PATH  
-Or if on windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.  
+```
+Or if on Windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.  
 
 Then it can be run using:
-molprobity_to_coot.py
+```
+molprobity_to_coot.py  
+```
 (Note you may have to do "conda activate coot_plumage" first depending on how you set it up)
 
 
