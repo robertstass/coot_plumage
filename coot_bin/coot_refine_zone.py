@@ -16,7 +16,7 @@ do_shift_numbers = True # If True, you may have to edit the script below to matc
 
 
 aa_dict={'A':'ALA','R':'ARG','N':'ASN','D':'ASP','C':'CYS','E':'GLU','Q':'GLN','G':'GLY','H':'HIS','I':'ILE','L':'LEU','K':'LYS','M':'MET','F':'PHE','P':'PRO','S':'SER','T':'THR','W':'TRP','Y':'TYR','V':'VAL'}
-
+nt_list=['A','C','T','G','U', "I", "DA", "DC", "DG", "DI", "DT", "DU"]
 # Real space refine zone with n residues either side of current residue.
 def real_space_refine_zone_num_residues(residues=default_number_of_residues_1):
     imol = go_to_atom_molecule_number()
@@ -31,6 +31,8 @@ def real_space_refine_zone_num_residues(residues=default_number_of_residues_1):
         if does_residue_exist_p(imol,chain_id,n,""):
             name = residue_name(imol, chain_id, n, "")
             if name in aa_dict.values():
+                exists = True
+            elif name in nt_list:
                 exists = True
         residues_exist.append(exists)
     if not residues_exist[residues]: #central residue
