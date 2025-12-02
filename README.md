@@ -1,6 +1,6 @@
 ## Coot plumage - Adding a feathery flourish to Coot.
 
-A small collection of mostly time saving add-ons for the model building software Coot.  
+A small collection of mostly time saving add-ons for the model building software Coot (The older 0. version only).
 Installation instructions can be found at the end of this file.
 
 Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
