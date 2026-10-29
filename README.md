@@ -1,6 +1,6 @@
 ## Coot plumage - Adding a feathery flourish to Coot.
 
-A small collection of mostly time saving add-ons for the model building software Coot (The older 0. version only).
+A small collection of mostly time saving add-ons for the model building software Coot. Works with both Coot 0.9.x and Coot 1.x (set the `COOT_VERSION` variable in plumage.py, see installation).
 Installation instructions can be found at the end of this file.
 
 Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
@@ -31,7 +31,8 @@ By default the z and x keys activate the current residue and 2 and 3 residues ei
 ## Notes
 
 Key bindings can be adjusted by editing the top of each script.
-Some additional small default settings are set in the plumage.py script. Comment out or edit these as appropriate.
+Some additional small default settings are set in the plumage.py script. Comment out or edit these as appropriate.  
+Note for Coot 1.x: the toolbar buttons show the same icons as in 0.9.x plus a text label. Set `TOOLBAR_LABELS = False` in plumage.py for icon only buttons (Coot 0.9.x buttons are always icon only).
 Some inspiration for these scripts were taken from Oli Clarke's excellent repo [github.com/olibclarke/coot-trimmings](github.com/olibclarke/coot-trimmings) and Phenix's coot integration.  
 
 ## Installation
@@ -40,12 +41,34 @@ Download/clone this repository:
 ```commandline
 git clone https://github.com/robertstass/coot_plumage.git
 ```
-Go to the coot_plumage directory and edit the plumage.py file to replace the value of script_dir with the full path to this repository directory. Then move the plumage.py file to the ~/.coot-preferences directory:
+Go to the coot_plumage directory and edit the plumage.py file to:  
+- replace the value of script_dir with the full path to this repository directory.  
+- set COOT_VERSION to 0 (Coot 0.9.x and older) or 1 (Coot 1.x). Setting it to None makes the scripts try to detect the version automatically. A warning is printed in Coot's terminal if the value you set looks wrong.  
+
+Then move the plumage.py file to the Coot preferences directory:  
+
+| Coot version | Preferences directory |
+|---|---|
+| 0.9.x | `~/.coot-preferences` (`C:\Users\<username>\.coot-preferences` on Windows) |
+| 1.x | `~/.config/COOT/Preferences` (`C:\Users\<username>\AppData\Local\COOT\config\Preferences` on Windows) |
+
 ```commandline
 mv plumage.py ~/.coot-preferences
 ```
-(C:\Users\<username>\.coot-preferences on Windows).  
+(If the XDG_CONFIG_HOME environment variable is set, Coot 1.x looks in `$XDG_CONFIG_HOME/Preferences` instead.)  
 Feel free to edit default values or remove any unwanted lines in this file. 
+
+## Supporting both Coot versions
+Coot 1.x moved most functions into the `coot` module (e.g. `set_map_radius_em(20)` became `coot.set_map_radius_em(20)`), and changed how toolbar buttons and key bindings are added, so the scripts access Coot through a small shared module, `coot_bin/plumage_compat.py`.  
+plumage.py sets the version once (`plumage_compat.init(COOT_VERSION)`) and each script in coot_bin simply does:
+```python
+import plumage_compat as pc
+pc.COOT_VERSION                      # 0 or 1
+pc.coot.set_map_radius_em(20)        # call any Coot function. Works in both versions.
+pc.toolbar_button(label, function, icon=..., tooltip=...)  # icon: a Coot icon name e.g. "refine-1.svg" or the full path to your own svg/png
+pc.add_key_binding(name, key, function)
+```
+Use these when writing new scripts so that they work in both versions. The molprobity_to_coot.py script runs outside of Coot and talks to it over XML-RPC, so it does not depend on the Coot version.  
 
 Additional steps are required to use the molprobity_to_coot.py script:  
 This script runs on an external python installation and has the following requirements:  

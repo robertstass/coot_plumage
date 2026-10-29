@@ -1,5 +1,6 @@
 # This is not a standalone script.
 # It must be run in coot using the run_script(r"/path/to/molprobity_to_coot_server.py")
+# (plumage.py does this for you, and must be run first as it sets up the plumage_compat module.)
 # Then it used in conjunction with a separate molprobity_to_coot.py script.
 # Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 ############################################
@@ -9,38 +10,35 @@ next_key = "w"
 
 ############################################
 
+import plumage_compat as pc  # holds COOT_VERSION (set in plumage.py) and the version-specific wrappers.
+
+# The residue list that is sent from molprobity_to_coot.py and the position in that list.
+residue_list = None
+current_residue_index = 0
+
 def update_residue_list(residues):
-    try:
-        residue_list
-    except:
-        global residue_list
+    global residue_list
+    global current_residue_index
     residue_list = residues
-    try:
-        current_residue_index
-    except:
-        global current_residue_index
     current_residue_index = 0
     to_residue(0)
 
 def to_residue(add=0):
     global current_residue_index
-    try:
-        residue_list
-        current_residue_index
-    except:
-        add_status_bar_text("Load residue list first! (eg with the molprobity_to_coot.py script).")
+    if residue_list is None:
+        pc.coot.add_status_bar_text("Load residue list first! (eg with the molprobity_to_coot.py script).")
         return
     current_residue_index = current_residue_index + add
     if current_residue_index >= len(residue_list):
         current_residue_index = current_residue_index - add
-        add_status_bar_text("End of residue list.")
+        pc.coot.add_status_bar_text("End of residue list.")
     elif current_residue_index < 0:
         current_residue_index = 0
-        add_status_bar_text("Start of residue list.")
+        pc.coot.add_status_bar_text("Start of residue list.")
     else:
         residue = residue_list[current_residue_index]
-        set_go_to_atom_chain_residue_atom_name(residue[0], residue[1], "CA")
-        add_status_bar_text("Go to: %s %d. Residue %d of %d in list." % (residue[0], residue[1], current_residue_index+1, len(residue_list)))
+        pc.coot.set_go_to_atom_chain_residue_atom_name(residue[0], residue[1], "CA")
+        pc.coot.add_status_bar_text("Go to: %s %d. Residue %d of %d in list." % (residue[0], residue[1], current_residue_index+1, len(residue_list)))
 
 
 def go_to_next_residue():
@@ -50,29 +48,26 @@ def go_to_previous_residue():
     to_residue(-1)
 
 
-
-
-
-
-
 allowed_methods = {"update_residue_list": update_residue_list}
 
 import socket
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from xmlrpclib import ServerProxy
-import gobject
-import coot
 import traceback
 import sys
 import os
 import threading
-import Queue
+import coot  # the coot module. The xml-rpc server looks up the functions to run in here.
+try:
+    from SimpleXMLRPCServer import SimpleXMLRPCServer  # python 2 (Coot 0.9)
+    import Queue as queue
+except ImportError:
+    from xmlrpc.server import SimpleXMLRPCServer  # python 3 (Coot 1)
+    import queue
 
-command_queue = Queue.Queue()
+command_queue = queue.Queue()
 
 class coot_xmlrpc_server (SimpleXMLRPCServer) :
     def __init__ (self, addr) :
-        SimpleXMLRPCServer.__init__(self, addr, logRequests=0)
+        SimpleXMLRPCServer.__init__(self, addr, logRequests=0, allow_none=True)
         self.timeout = 0.01
     def _dispatch (self, method, params) :
         result = -1
@@ -129,14 +124,15 @@ def process_queue():
         func, params = command_queue.get()
         try:
             result = func(*params)
-            print("Executed:", func.__name__, "Result:", result)
+            print("Executed: %s Result: %s" % (func.__name__, result))
         except Exception as e:
             print("Error executing {}: {}".format(func.__name__, str(e)))
             traceback.print_exc()
-    return True  # Keeps `gobject.timeout_add` running
+    return True  # Keeps the timeout running
 
-# Schedule the queue processing to run every 10ms (non-blocking)
-gobject.timeout_add(10, process_queue)
+# Schedule the queue processing to run every 10ms in the main (GUI) thread (non-blocking).
+# This is what allows the xml-rpc thread to safely hand commands over to coot.
+pc.idle_add(10, process_queue)
 
 
 # on the client side
@@ -144,8 +140,8 @@ gobject.timeout_add(10, process_queue)
 # coot.set_map_radius_em(40) # or any other coot function
 
 
-coot_toolbar_button("Previous residue", "go_to_previous_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, previous_key))
-add_key_binding("Previous residue", previous_key, lambda: go_to_previous_residue())
+pc.toolbar_button("Previous residue", go_to_previous_residue, icon="go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, previous_key))
+pc.add_key_binding("Previous residue", previous_key, lambda: go_to_previous_residue())
 
-coot_toolbar_button("Next residue", "go_to_next_residue()", "go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, next_key))
-add_key_binding("Next residue", next_key, lambda: go_to_next_residue())
+pc.toolbar_button("Next residue", go_to_next_residue, icon="go-to-atom.png", tooltip="Cycle through supplied residue list. Supply this list via an external script (to 127.0.0.1/%d) such as molprobity_to_coot.py. Part of the coot_plumage set of scripts. Hotkey: %s" % (port, next_key))
+pc.add_key_binding("Next residue", next_key, lambda: go_to_next_residue())

@@ -1,5 +1,6 @@
 # This is not a standalone script.
 # It must be run in coot using the run_script(r"/path/to/coot_rotamers.py")
+# (plumage.py does this for you, and must be run first as it sets up the plumage_compat module.)
 # Part of coot_plumage (github.com/robertstass/coot_plumage). Written by Robert Stass, Bowden group, STRUBI/OPIC (2024)
 ############################################
 
@@ -7,6 +8,8 @@ previous_rotamer_key = 'e'
 next_rotamer_key = 'r'
 
 ############################################
+
+import plumage_compat as pc  # holds COOT_VERSION (set in plumage.py) and the version-specific wrappers.
 
 do_score = True
 
@@ -215,21 +218,19 @@ add_richardson_rotamer("CYS", "m", 142, 50, 75, 32, 43, -65, -65, 0, 0, 0, 0, 0,
 
 
 
+# State for cycling through rotamers (the original residue and which rotamer we are currently on).
+rotamer_residue = None
+rotamer_i = 0
+
 def to_rotamer(add=1):
-    try:
-        rotamer_residue
-        rotamer_i
-    except:
-        global rotamer_residue
-        global rotamer_i
-        rotamer_residue = None
-        rotamer_i = 0
-    imol = go_to_atom_molecule_number()
-    chain_id = go_to_atom_chain_id()
-    resnum = go_to_atom_residue_number()
-    res_name = residue_name(imol, chain_id, resnum, "")
+    global rotamer_residue
+    global rotamer_i
+    imol = pc.coot.go_to_atom_molecule_number()
+    chain_id = pc.coot.go_to_atom_chain_id()
+    resnum = pc.coot.go_to_atom_residue_number()
+    res_name = pc.coot.residue_name(imol, chain_id, resnum, "")
     residue = (imol, chain_id, resnum)
-    residue_info = residue_info_py(imol, chain_id, resnum, "")
+    residue_info = pc.coot.residue_info_py(imol, chain_id, resnum, "")
     new_residue = False
     if rotamer_residue is not None:
         old_residue, old_residue_info = rotamer_residue
@@ -240,7 +241,7 @@ def to_rotamer(add=1):
     if new_residue:
         rotamer_residue = (residue, residue_info)
         rotamer_i = 0
-    number_of_rotamers = n_rotamers(imol, chain_id, resnum, "")
+    number_of_rotamers = pc.coot.n_rotamers(imol, chain_id, resnum, "")
     rotamer_i = rotamer_i + add
     rotamer_i = rotamer_i % (number_of_rotamers+1)
     status_bar_message = ""
@@ -253,13 +254,13 @@ def to_rotamer(add=1):
                 atom_index = atom[3]
                 atom_coords = atom[2]
                 attribute_list = attribute_list + [[imol, chain_id, resnum, "", atom_name, "", "x", atom_coords[0]], [imol, chain_id, resnum, "", atom_name, "", "y", atom_coords[1]], [imol, chain_id, resnum, "", atom_name, "", "z", atom_coords[2]]]
-        set_atom_attributes_py(attribute_list)
+        pc.coot.set_atom_attributes_py(attribute_list)
         status_bar_message = "Original rotamer."
     else:
-        set_residue_to_rotamer_number(imol, chain_id, resnum, "", "", rotamer_i-1)
+        pc.coot.set_residue_to_rotamer_number(imol, chain_id, resnum, "", "", rotamer_i-1)
         status_bar_message = "Rotamer %d of %d." % (rotamer_i, number_of_rotamers)
         try:
-            rot_name = get_rotamer_name_py(imol, chain_id, resnum, "")
+            rot_name = pc.coot.get_rotamer_name_py(imol, chain_id, resnum, "")
             rotamer_library_values = richardson_rotamer_library[res_name][rot_name]
             percent = rotamer_library_values[1]
             chi = rotamer_library_values[6]
@@ -268,11 +269,11 @@ def to_rotamer(add=1):
             pass
     if do_score:
         try:
-            score = rotamer_score(imol, chain_id, resnum, "", "")
+            score = pc.coot.rotamer_score(imol, chain_id, resnum, "", "")
             status_bar_message = status_bar_message + "    Score: %.2f" % score
         except:
             pass
-    add_status_bar_text(status_bar_message)
+    pc.coot.add_status_bar_text(status_bar_message)
 
 
 def next_rotamer():
@@ -283,11 +284,11 @@ def previous_rotamer():
 
 
 
-coot_toolbar_button("Previous rotamer", "previous_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % previous_rotamer_key)
-add_key_binding("Previous rotamer",previous_rotamer_key, lambda: previous_rotamer())
+pc.toolbar_button("Previous rotamer", previous_rotamer, icon="rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % previous_rotamer_key)
+pc.add_key_binding("Previous rotamer", previous_rotamer_key, lambda: previous_rotamer())
 
-coot_toolbar_button("Next rotamer", "next_rotamer()", "rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % next_rotamer_key)
-add_key_binding("Next rotamer",next_rotamer_key, lambda: next_rotamer())
+pc.toolbar_button("Next rotamer", next_rotamer, icon="rotamers.svg", tooltip="Cycle rotamers for current residue.  Part of the coot_plumage set of scripts. Hotkey: %s." % next_rotamer_key)
+pc.add_key_binding("Next rotamer", next_rotamer_key, lambda: next_rotamer())
 
 
 print("Cycle through rotamers using the %s and %s keys." % (previous_rotamer_key, next_rotamer_key))
