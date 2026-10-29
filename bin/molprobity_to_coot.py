@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import xmlrpc.client
 import argparse
-import sys
 import os
 class ArgumentParser():
 
@@ -23,9 +22,6 @@ class ArgumentParser():
 
         # Positional HTML file argument
         self.parser.add_argument("html_file", help="Path to the molprobity HTML file")
-        if len(sys.argv) == 1:
-            self.usage()
-            sys.exit()
 
     def usage(self):
         self.parser.print_help()
@@ -116,7 +112,8 @@ def main(html_file, column, filter_text, port):
         print("For example by running run_script('molprobity_to_coot_server.py') in coot." )
 
 
-if __name__ == "__main__":
+def cli():
+    """Command-line entry point for installed and standalone usage."""
     argparser = ArgumentParser()
     args = argparser.parser.parse_args()
     argparser.validate(args)
@@ -127,3 +124,7 @@ if __name__ == "__main__":
 
 
 
+
+
+if __name__ == "__main__":
+    cli()

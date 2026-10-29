@@ -11,9 +11,9 @@ To start, send the model to the molprobity server at [molprobity.biochem.duke.ed
 Click through to the results section named "Multi-criterion chart". This will display a table with all the residues and any validation issues associated with each. Save this webpage as a html file (Right click or File -> Save as...).
 Then you can extract a subset of residues from this table and send them to Coot. For example, if you wanted to select all the Rotamer outliers, do:
 ```
-molprobity_to_coot.py --column Rotamer --filter_text OUTLIER <molprobity_html_file>
+molprobity-to-coot --column Rotamer --filter_text OUTLIER <molprobity_html_file>
 ```
-where <molprobity_html_file> is the downloaded html file from molprobity. The script finds cells in the table that contain the value set by --filter_text so you can set this to "Allowed" or any other text that will match whatever you want.  
+where <molprobity_html_file> is the downloaded html file from molprobity. The command also remains available as `molprobity_to_coot.py` with the legacy installation described below. The script finds cells in the table that contain the value set by --filter_text so you can set this to "Allowed" or any other text that will match whatever you want.  
 Alternatively, there are some wrapper scripts that will find the most recent html file in the current directory so you can copy these to that directory and run them by double-clicking them or calling them from the command line. Hopefully these should be straightforward to edit to suit your needs. 
 
 Finally you can cycle through the residues in this list with the toolbar buttons provided or with the "q" and "w" keys. (ensure the correct molecule is selected in the "Go To Atom" window.) 
@@ -70,27 +70,76 @@ pc.add_key_binding(name, key, function)
 ```
 Use these when writing new scripts so that they work in both versions. The molprobity_to_coot.py script runs outside of Coot and talks to it over XML-RPC, so it does not depend on the Coot version.  
 
-Additional steps are required to use the molprobity_to_coot.py script:  
-This script runs on an external python installation and has the following requirements:  
--pandas (tested on v1.5.3)  
--bs4 (tested on v4.11.1)  
-The easiest way to get access to these is with an [Anaconda](https://www.anaconda.com/download) installation as these libraries should be installed already. If not, set up an environment with:  
-conda env create -f coot_plumage.yml  
-conda activate coot_plumage   
+## Installing the MolProbity command-line tool
 
-Add the following to your ~/.bashrc file: 
+`molprobity-to-coot` runs in a **separate Python environment outside Coot**.
+It reads saved MolProbity HTML and sends residue lists to the XML-RPC server
+loaded by the Coot setup above. You still need to configure `plumage.py` in
+Coot: installing this package does not install Coot preferences or scripts.
+
+Requires Python 3.9 or newer. Dependencies (`pandas` and `beautifulsoup4`)
+are installed automatically by the following methods. Choose one.
+
+### Option 1: uv (recommended)
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+if necessary, then run in the repository directory:
+
+```sh
+uv tool install .
 ```
-export PATH=<full_path_to>/coot_plumage/bin:$PATH  
+
+This installs an isolated `molprobity-to-coot` command. If its directory
+is not on PATH, run `uv tool update-shell` and restart your shell.
+After updating the checkout, run `uv tool install --reinstall .`.
+Include the --editable argument for development. 
+
+### Option 2: pip
+
+From the repository directory, preferably inside a virtual environment:
+
+```sh
+python -m venv .venv
+# Linux/macOS:
+source .venv/bin/activate
+# Windows PowerShell instead: .venv\\Scripts\\Activate.ps1
+python -m pip install .
 ```
-Or if on Windows add <full_path_to>/coot_plumage/bin to your system PATH environment variable.  
 
-Then it can be run using:
+The `molprobity-to-coot` command is available while the environment is active.
+For editable development installs, use `python -m pip install -e .` instead.
+
+### Option 3: existing Conda / PATH installation
+
+The original workflow is still supported and uses the script in `bin/`
+rather than the packaged command. From the repository directory:
+
+```sh
+conda env create -f coot_plumage.yml
+conda activate coot_plumage
 ```
-molprobity_to_coot.py  
+
+Add the script directory to PATH (for example, in `~/.bashrc`):
+
+```sh
+export PATH="<full_path_to>/coot_plumage/bin:$PATH"
 ```
-(Note you may have to do "conda activate coot_plumage" first depending on how you set it up)
 
+On Windows, add `<full_path_to>\\coot_plumage\\bin` to PATH instead.
+Then run `molprobity_to_coot.py` with the Conda environment active.
+You can also call `python bin/molprobity_to_coot.py` from the repository.
 
+### Usage
 
+With Coot open and the plumage XML-RPC server loaded:
 
+```sh
+molprobity-to-coot --column Rotamer --filter_text OUTLIER report.html
+molprobity-to-coot --help
+```
 
+Defaults: column `Rotamer`, filter `OUTLIER`, XML-RPC port `5007`
+(change with `--port`). The legacy `molprobity_to_coot.py` accepts
+the same arguments. The optional wrapper scripts in `wrappers_unix/`
+and `wrappers_windows/` use the legacy command name; either retain the
+legacy PATH setup or edit them to call `molprobity-to-coot` if using uv/pip.

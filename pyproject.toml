@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coot-plumage"
+version = "0.1.0"
+description = "MolProbity validation-table residue selection for Coot"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["beautifulsoup4>=4.11", "pandas>=1.5.3"]
+
+[project.scripts]
+molprobity-to-coot = "molprobity_to_coot:cli"
+
+[tool.setuptools]
+py-modules = ["molprobity_to_coot"]
+
+[tool.setuptools.package-dir]
+"" = "bin"
