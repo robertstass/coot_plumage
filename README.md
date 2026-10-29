@@ -141,5 +141,5 @@ molprobity-to-coot --help
 Defaults: column `Rotamer`, filter `OUTLIER`, XML-RPC port `5007`
 (change with `--port`). The legacy `molprobity_to_coot.py` accepts
 the same arguments. The optional wrapper scripts in `wrappers_unix/`
-and `wrappers_windows/` use the legacy command name; either retain the
-legacy PATH setup or edit them to call `molprobity-to-coot` if using uv/pip.
+and `wrappers_windows/` use the molprobity-to-coot command;  edit them to call 
+`molprobity_to_coot.py` if using the legacy $PATH based install.
