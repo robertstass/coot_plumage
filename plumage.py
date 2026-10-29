@@ -35,6 +35,7 @@ pc.coot.set_map_radius_em(20)  # The radius of the map that is rendered. Smaller
 pc.coot.set_refine_auto_range_step(4) # Number of residues to refine when clicking a single residue and then hitting the "a" key.
 pc.coot.set_matrix(20) # Default value for the "Weight matrix, Refinement weight" setting that can be adjusted in the Refinement and regularization settings panel.
 pc.coot.set_refine_ramachandran_angles(1) # Include ramachandran constraints in the refinement.
+pc.coot.set_default_initial_contour_level_for_map(9.5) #Set initial viewing threshold level. Doesn't seem to work in v0.
 
 ###### Useful additional functions ######
 pc.toolbar_button("Sphere Refine", pc.sphere_refine, icon="reset-view-32.svg", tooltip="RSR around active residue")
